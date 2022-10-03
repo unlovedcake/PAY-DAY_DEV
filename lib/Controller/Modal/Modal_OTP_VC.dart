@@ -6,6 +6,8 @@ import 'package:my_app/Controller/Services/Payday_Today/PaydayTabbar/PaydayHomeT
 import 'package:my_app/Model/APIResponse/APIDataModel.dart';
 import 'package:my_app/Server/Repo.dart';
 
+import '../../API/Login-Payday-API.dart';
+
 
 
 // class ModalOTPView extends StatefulWidget {
@@ -59,50 +61,7 @@ String password = "."}) {
     );
   }
 
-  void loginPayday(BuildContext loadingViewContext, BuildContext context, 
-    String userid, 
-    String password,
-    String otp,
-    String isAlwaysLogin
-    ){
 
-    void dismissLoadingView(){
-      Navigator.pop(loadingViewContext);
-    }
-    void moveToHomePage(){
-      Navigator.pushAndRemoveUntil<dynamic>(context, 
-        MaterialPageRoute<dynamic>(
-          builder: (BuildContext context) => PaydayHomeTabbar(),
-        ), (route) => false
-      );
-    }
-
-    init() async {
-      var params = LinkListParams();
-      params.add(MyEntry("imei",imei ?? "."));
-      params.add(MyEntry("userid","63$userid"));
-      params.add(MyEntry("password",password));
-      params.add(MyEntry("devicetype",deviceType.toString().replaceAll("{", "").replaceAll("}", "")));
-      params.add(MyEntry("type","LOGIN"));
-      params.add(MyEntry("from","VERIFYLOGIN"));
-      params.add(MyEntry("otp",otp));
-      params.add(MyEntry("appVersion",appVersion));
-      params.add(MyEntry("isalwayssignin",isAlwaysLogin));
-
-      RepoClass repoClass = RepoClass();
-      ResponseDataModel responseData = await repoClass.didStartCallAPI_noSession("api/wsb307","loginPayday",params);
-    
-      dismissLoadingView();
-      
-      if (responseData.status == "000") {
-        moveToHomePage();
-      } else {
-        print('A network error occurred');
-      }
-
-    }
-    init();
-  }
   //======================================================================
   //                        END: Action Codes
   //======================================================================

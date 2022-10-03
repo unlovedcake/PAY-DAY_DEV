@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:my_app/Components/Utilities/Extensions.dart';
 import 'package:my_app/Controller/Services/Payday_Today/PaydayMultipleCompany/PaydaySelectCompany.dart';
 import 'dart:io' show Platform;
 import 'package:my_app/Controller/Services/Payday_Today/PaydayTabbar/PaydayHomeTabbarVC.dart';
@@ -80,86 +81,60 @@ void loginV2(BuildContext loadingViewContext, BuildContext context,
 
     if (responseData.status != "000") {
       dismissLoadingView();
+      errorMessage(responseData.message.toString());
+
     }
 
-    if (responseData.status == "000") {
+    else if (responseData.status == "000") {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('mobileNumber', "63$userid" ?? ".");
 
 
-      Map<String, dynamic> jsonData =
-      json.decode(responseData.data?.toLowerCase().trim() ?? ".");
-      GKBorrowerProfileDataModel decodedData =
-      GKBorrowerProfileDataModel.fromMap(jsonData["profile"]);
-      String querySTR = '''
-      INSERT Into UserProfile (id, sessionid, borrowerid, borrowername, borrowertype, firstname,
-      middlename, lastname, birthdate, gender, occupation,
-      interest, emailaddress, isverified, mobileno, imei,
-      userid, password, lastlogin, longitude, latitude, 
-      billingaddress, streetaddress, city, province, zip,
-      country, dateregistration, datetimelinked, guarantorid, isviasubguarantor,
-      dateapprovedbyguarantor, creditratingbyguarantor, status, profilepicurl, recentotp, extra1,
-      extra2, extra3, extra4, notes1, notes2) 
-      VALUES (?,?,?,?,?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?,? ,?,?,?,?,?)
-      ''';
-      List values = [
-        decodedData.id,
-        "${jsonData['sessionid']}",
-        "${decodedData.borrowerid?.toUpperCase()}",
-        "${decodedData.borrowername?.toUpperCase()}",
-        "${decodedData.borrowertype?.toUpperCase()}",
-        "${decodedData.firstname?.toUpperCase()}",
-        "${decodedData.middlename?.toUpperCase()}",
-        "${decodedData.lastname?.toUpperCase()}",
-        "${decodedData.birthdate}",
-        "${decodedData.gender}",
-        "${decodedData.occupation}",
-        "${decodedData.interest}",
-        "${decodedData.emailaddress}",
-        decodedData.isverified,
-        "${decodedData.mobileno}",
-        "${decodedData.imei}",
-        "${decodedData.userid}",
-        "${decodedData.password}",
-        "${decodedData.lastlogin}",
-        "${decodedData.longitude}",
-        "${decodedData.latitude}",
-        "${decodedData.billingaddress?.toUpperCase()}",
-        "${decodedData.streetaddress?.toUpperCase()}",
-        "${decodedData.city?.toUpperCase()}",
-        "${decodedData.province?.toUpperCase()}",
-        decodedData.zip,
-        "${decodedData.country?.toUpperCase()}",
-        "${decodedData.dateregistration}",
-        "${decodedData.datetimelinked}",
-        "${decodedData.guarantorid}",
-        decodedData.isviasubguarantor,
-        "${decodedData.dateapprovedbyguarantor}",
-        "${decodedData.creditratingbyguarantor}",
-        "${decodedData.status}",
-        "${decodedData.profilepicurl}",
-        "${decodedData.recentotp}",
-        "${decodedData.extra1}",
-        "${decodedData.extra2}",
-        "${decodedData.extra3}",
-        "${decodedData.extra4}",
-        "${decodedData.notes1}",
-        "${decodedData.notes2}"
-      ];
-      SQLiteDbProvider.db.insertDBQuery("UserProfile", querySTR, values);
+      Map<String, dynamic> jsonData = json.decode(responseData.data ?? ".");
 
-      List<GKBorrowerProfileDataModel> sqlUserData =
-      await SQLiteDbProvider.db.getAllUserProfile();
-      if (sqlUserData.isNotEmpty) {
-        userData = sqlUserData[0];
+      GKBorrowerProfileDataModel decodedData =  GKBorrowerProfileDataModel.fromMap(jsonData["profile"]);
 
-        //STORING sha1OTP
-        sha1OTP = await encryptionChannel
-            .invokeMethod('sha1', {'data': sqlUserData[0].recentotp});
-        // moveToHomePage();
-        getEmployersInfo(loadingViewContext, context);
+      var jsonEncodedData = json.encode(jsonData);
+
+
+
+      String sesionId = jsonData['sessionid'].toString();
+
+      prefs.setString("gkBorrowerProfile", jsonEncodedData );
+
+
+
+      prefs.setString('sessionId', sesionId);
+      sha1OTP = decodedData.recentotp?.getSha1();
+
+      //debugPrint(decodedData.toMap().toString());
+
+      debugPrint("SHAOTP1");
+      debugPrint(jsonEncodedData.toString());
+
+
+
+      if (prefs.containsKey("gkBorrowerProfile")) {
+
+       // GKBorrowerProfileDataModel?  listCompanyData;
+
+        var companyJSONData = json.decode((prefs.getString("gkBorrowerProfile")!));
+        //listCompanyData = GKBorrowerProfileDataModel.fromMap(companyJSONData);
+
+        GKBorrowerProfileDataModel decodedData =  GKBorrowerProfileDataModel.fromMap(companyJSONData["profile"]);
+
+
+        print('DECODEZZZZ ');
+        print( companyJSONData);
+        print(  decodedData.firstname);
+        print(  decodedData.lastname);
+        //listCompanyData.map((e) => debugPrint(e.CompanyName.toString()));
       }
+
+     //getEmployersInfo( context,userid);
+
+
     } else if (responseData.status == "201") {
       showDialog(
           barrierDismissible: false,
@@ -179,9 +154,9 @@ void loginV2(BuildContext loadingViewContext, BuildContext context,
   init();
 }
 
-void getEmployersInfo(BuildContext loadingViewContext, BuildContext context) {
+void getEmployersInfo( BuildContext context, String userId) {
   Future<bool> dismissLoadingView() async {
-    Navigator.pop(loadingViewContext);
+    Navigator.pop(context);
 
     return true;
   }
@@ -205,12 +180,18 @@ void getEmployersInfo(BuildContext loadingViewContext, BuildContext context) {
   }
 
   init() async {
-    var sessionID = userData?.sessionid ?? ".";
+
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var sessionID = prefs.getString('sessionId') ?? ".";
+    var borrowerID = prefs.getString('borrowerId') ?? ".";
+
 
     var params = LinkListParams();
     params.add(MyEntry("imei", imei ?? "."));
-    params.add(MyEntry("userid", userData?.userid ?? "."));
-    params.add(MyEntry("borrowerid", userData?.borrowerid ?? "."));
+    params.add(MyEntry("userid", '63$userId'));
+    params.add(MyEntry("borrowerid", borrowerID ));
     params.add(MyEntry("devicetype",
         deviceType.toString().replaceAll("{", "").replaceAll("}", "")));
 
@@ -219,19 +200,48 @@ void getEmployersInfo(BuildContext loadingViewContext, BuildContext context) {
     await repoClass.didStartCallAPI_withSession(
         sessionID, "api/wsb319", "getEmployersInfo", params);
 
-    bool isDataLoaded = await dismissLoadingView();
-    if (isDataLoaded) {
+
+
       if (responseData.status == "000") {
-        final jsonData = json.decode((responseData.data ?? "."));
-        List<PaydayCompanyListDataModel> decodedData = (jsonData as List)
-            .map((itemWord) => PaydayCompanyListDataModel.fromMap(itemWord))
-            .toList();
+        final jsonData  = json.decode((responseData.data ?? "."));
+        List<PaydayCompanyListDataModel> decodedData = (jsonData as List).map((value) => PaydayCompanyListDataModel.fromMap(value)).toList();
+
+        final jsonEncodedData = json.encode(decodedData.map((item) => item.toJson()).toList());
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        prefs.setString("companyListData", jsonEncodedData );
+
+
+
+
+        if (prefs.containsKey("companyListData")) {
+
+          List<PaydayCompanyListDataModel>?  listCompanyData;
+
+          var companyJSONData = json.decode((prefs.getString("companyListData")!));
+          listCompanyData = (companyJSONData as List)
+              .map((itemWord) => PaydayCompanyListDataModel.fromMap(itemWord))
+              .toList();
+
+         // final jsonEncodedDatas = json.encode(listCompanyData.map((item) => item.toJson()).toList().toString());
+          print('DECODEZZZZ ');
+          print( listCompanyData.map((e) => e.EmployeeID));
+          print( listCompanyData.first.EmployeeID);
+          //listCompanyData.map((e) => debugPrint(e.CompanyName.toString()));
+        }
+
+
+
+        print('DECODE');
+        debugPrint(jsonData.toString());
+
         print(decodedData[0].EmployerID);
         print(decodedData.length);
         if (decodedData.length > 1) {
           moveToSelectCompany();
         } else {
-          moveToHomePage();
+         // moveToHomePage();
         }
       } else {
 
@@ -249,8 +259,10 @@ void getEmployersInfo(BuildContext loadingViewContext, BuildContext context) {
             curve: Curves.fastLinearToSlowEaseIn,
             reverseCurve: Curves.fastOutSlowIn);
         print('A network error occurreds');
+        debugPrint(sessionID);
+
       }
-    }
+
   }
 
   init();

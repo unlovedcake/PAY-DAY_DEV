@@ -1,28 +1,24 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:my_app/Components/UI Design/Colors-Design.dart';
-import 'package:my_app/Components/UI Design/TextField-Design.dart';
-import 'package:my_app/Controller/SignUp/SignUpVC/SetUpPassword-API.dart';
+import '../../Components/UI Design/Colors-Design.dart';
+import '../../Components/UI Design/TextField-Design.dart';
+import '../Login/LoginVC/Login-ContentColumnView.dart';
+import '../SignUp/SignUpVC/SetUpPassword-API.dart';
 
-import '../../../Components/Utilities/CommonFunc.dart';
-import '../../../Model/PaydayTodayDataModel.dart';
-import '../../Login/LoginVC/Login-ContentColumnView.dart';
+class ChangePassword extends StatefulWidget {
 
-import '../../../API/PartialRegisterV3-API.dart';
-import 'VerifyCodeVC.dart';
-
-class SignUpSetupVC extends StatefulWidget {
   final String phoneNumber;
-  const SignUpSetupVC({required this.phoneNumber,super.key});
+
+  const ChangePassword({required this.phoneNumber,Key? key}) : super(key: key);
 
   @override
-  State<SignUpSetupVC> createState() => _SignUpSetupVC();
+  State<ChangePassword> createState() => _ChangePasswordState();
 }
 
-class _SignUpSetupVC extends State<SignUpSetupVC> {
-  final TextEditingController firstName = TextEditingController();
-  final TextEditingController lastName = TextEditingController();
+class _ChangePasswordState extends State<ChangePassword> {
+
   final TextEditingController password = TextEditingController();
   final TextEditingController confirmPassword = TextEditingController();
 
@@ -41,11 +37,7 @@ class _SignUpSetupVC extends State<SignUpSetupVC> {
   }
 
   bool isValidationHasNoError(){
-    if (firstName.text.isEmpty) {
-      errorMessage('First Name is required.', context);
-    } else if (lastName.text.isEmpty) {
-      errorMessage('Last Name is required.', context);
-    }  else if (password.text.length < 8) {
+    if (password.text.length < 8) {
       errorMessage('Password must be minimum 8 characters', context);
     } else if (password.text.isEmpty) {
       errorMessage('Password is required.', context);
@@ -99,19 +91,25 @@ class _SignUpSetupVC extends State<SignUpSetupVC> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
+                  height: 200,
+                  padding: EdgeInsets.all(8),
+                  child: Image.asset('assets/goodkredit-logo/gk_logo.png')),
+
+
+              Container(
                   width: size.width - 66,
                   margin: const EdgeInsets.only(top: 25),
                   child: const Text(
-                      'To secure your account, kindly input your name and password.',
+                      'Enter your new account password. \n'
+                          'Your new password will be used to\n'
+                          'login to another account',
                       style: TextStyle(fontSize: 17, color: Colors.white),
                       textAlign: TextAlign.center)),
 
-              textFields('First Name', firstName, size),
-              textFields('Last Name', lastName, size),
               SizedBox(
                 height: 4,
               ),
-              passwordField('Password', password, size),
+              passwordField('New Password', password, size),
               passwordField('Confirm Password', confirmPassword, size),
 
               Container(
@@ -141,13 +139,13 @@ class _SignUpSetupVC extends State<SignUpSetupVC> {
 
 
 
-                      if(isValidationHasNoError()){
-                        setUpPassword(context, firstName.text,lastName.text,".", widget.phoneNumber, password.text);
+                    if(isValidationHasNoError()){
+                       setUpPassword(context, "","", "FORGETPASSWORD", widget.phoneNumber, password.text, );
 
-                      }
+                    }
                     // Navigator.of(context).push(createRoute(VerifyCodeVC()));
                   },
-                  child: const Text("Sign Up",
+                  child: const Text("Change Password",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 17,
@@ -187,6 +185,4 @@ class _SignUpSetupVC extends State<SignUpSetupVC> {
             margin: const EdgeInsets.only(bottom: 4),
             child: gkTxtField(hint, controller)));
   }
-
-
 }

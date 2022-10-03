@@ -6,21 +6,20 @@ import 'package:my_app/Components/Utilities/CommonFunc.dart';
 import 'package:my_app/Components/UI Design/Colors-Design.dart';
 import 'package:my_app/Components/UI Design/TextField-Design.dart';
 
-import 'SignUp-SetupVC.dart';
-import 'SignUpVC.dart';
-import '../../../API/VerifyMobileV3-API.dart';
+import '../../API/VerifyMobileV3-API.dart';
 
-class VerifyCodeVC extends StatefulWidget {
+
+class VerificationCodeVC extends StatefulWidget {
   final String phoneNumber;
-  const VerifyCodeVC({required this.phoneNumber,super.key});
+  const VerificationCodeVC({required this.phoneNumber,super.key});
 
 
   @override
-  State<VerifyCodeVC> createState() => _VerifyCodeVC();
+  State<VerificationCodeVC> createState() => _VerifyCodeVC();
 }
 
-class _VerifyCodeVC extends State<VerifyCodeVC> {
-  late TextEditingController verifyCode;
+class _VerifyCodeVC extends State<VerificationCodeVC> {
+
 
   TextEditingController otpController1 = TextEditingController();
   TextEditingController otpController2 = TextEditingController();
@@ -33,23 +32,7 @@ class _VerifyCodeVC extends State<VerifyCodeVC> {
 
   @override
   void initState() {
-    verifyCode = TextEditingController()
-      ..addListener(() {
-        setState(() {
-          if (verifyCode.text.length <= 6) {
-            finalCodeTxt = verifyCode.text;
-          }
 
-          if (verifyCode.text.length == 6) {
-            Navigator.of(context).push(createRoute(SignUpVC()));
-          }else{
-            if (verifyCode.text.length > 6){
-              verifyCode.text = finalCodeTxt;
-              verifyCode.selection = TextSelection.fromPosition(TextPosition(offset: verifyCode.text.length));
-            }
-          }
-        });
-      });
     super.initState();
   }
 
@@ -133,7 +116,7 @@ class _VerifyCodeVC extends State<VerifyCodeVC> {
 
   @override
   void dispose() {
-    verifyCode.dispose();
+
     super.dispose();
   }
 
@@ -224,7 +207,7 @@ class _VerifyCodeVC extends State<VerifyCodeVC> {
                     context,
                     widget.phoneNumber,
                     otpCode,
-                    '.'
+                    'FORGETPASSWORD'
                   );
                 }
 

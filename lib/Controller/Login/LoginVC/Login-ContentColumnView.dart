@@ -3,9 +3,9 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 import 'package:my_app/Components/Utilities/CommonFunc.dart';
 import 'package:my_app/Components/UI Design/TextField-Design.dart';
-import 'package:my_app/Controller/ForgotPassword/forgot-password.dart';
+import 'package:my_app/Controller/ForgotPassword/is-number-exist.dart';
 
-import 'package:my_app/Controller/Login/LoginVC/Login-didClick-Login-Btn.dart';
+import 'package:my_app/API/Login-didClick-Login-Btn.dart';
 
 import 'package:my_app/Controller/Modal/LoadingView.dart';
 
@@ -195,7 +195,7 @@ Column inputLoginUIView(
       MaterialButton(
         onPressed: () {
           Navigator.of(context)
-              .push(createRoute(ForgotPassword()));
+              .push(createRoute(IsNumberExist()));
         },
         child: const Text("Forgot Password?",
             style: TextStyle(

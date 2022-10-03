@@ -7,21 +7,22 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 import 'dart:io' show Platform;
 
-import '../../../Components/Utilities/CommonFunc.dart';
-import '../../../Components/Utilities/GlobalVar.dart';
-import '../../../Components/Utilities/LinkList.dart';
-import '../../../Model/PaydayTodayDataModel.dart';
-import '../../Modal/LoadingView.dart';
-import '../../Services/Payday_Today/PaydayMultipleCompany/PaydaySelectCompany.dart';
-import '../../Services/Payday_Today/PaydayTabbar/PaydayHomeTabbarVC.dart';
+import '../Components/Utilities/CommonFunc.dart';
+import '../Components/Utilities/GlobalVar.dart';
+import '../Components/Utilities/LinkList.dart';
+import '../Model/PaydayTodayDataModel.dart';
+import '../Controller/ForgotPassword/verfication-code.dart';
+import '../Controller/Modal/LoadingView.dart';
+import '../Controller/Services/Payday_Today/PaydayMultipleCompany/PaydaySelectCompany.dart';
+import '../Controller/Services/Payday_Today/PaydayTabbar/PaydayHomeTabbarVC.dart';
 import '/Model/APIResponse/APIDataModel.dart';
 import '/Server/Repo.dart';
-import 'SignUpVC.dart';
-import 'Terms-Condition.dart';
+import '../Controller/SignUp/SignUpVC/SignUpVC.dart';
+import '../Controller/SignUp/SignUpVC/Terms-Condition.dart';
 
 
 void partialRegisterV3(BuildContext context,
-    String? phoneNumber) {
+    String? phoneNumber,String from) {
 
 
 
@@ -61,11 +62,11 @@ void partialRegisterV3(BuildContext context,
         reverseAnimation: StyledToastAnimation.slideToTopFade,
         position: const StyledToastPosition(
             align: Alignment.topCenter, offset: 0.0),
-        startOffset: Offset(0.0, -3.0),
-        reverseEndOffset: Offset(0.0, -3.0),
-        duration: Duration(seconds: 4),
+        startOffset: const Offset(0.0, -3.0),
+        reverseEndOffset: const Offset(0.0, -3.0),
+        duration: const Duration(seconds: 4),
         //Animation duration   animDuration * 2 <= duration
-        animDuration: Duration(seconds: 1),
+        animDuration: const Duration(seconds: 1),
         curve: Curves.fastLinearToSlowEaseIn,
         reverseCurve: Curves.fastOutSlowIn);
   }
@@ -76,7 +77,7 @@ void partialRegisterV3(BuildContext context,
     params.add(MyEntry("mobile", '$phoneNumber'));
     params.add(MyEntry("countrycode", "63"));
     params.add(MyEntry("imei", imei ?? "."));
-    params.add(MyEntry("from", "."));
+    params.add(MyEntry("from", from));
     params.add(MyEntry("devicetype",
         deviceType.toString().replaceAll("{", "").replaceAll("}", "")));
     RepoClass repoClass = RepoClass();
@@ -109,10 +110,14 @@ void partialRegisterV3(BuildContext context,
         //   prefs.setString('sessionId',words[7]);
         //   prefs.setString('borrowerId',words[3]);
         dismissLoadingView();
-
-        displayGeneralDialog(context, phoneNumber!);
-        debugPrint('OKEY');
-        debugPrint(responseData.status);
+        if(from == ".") {
+          displayGeneralDialog(context, phoneNumber!);
+          debugPrint('OKEY');
+          debugPrint(responseData.status);
+        }else{
+          Navigator.of(context)
+              .push(createRoute(VerificationCodeVC(phoneNumber: '63$phoneNumber')));
+        }
 
 
       }

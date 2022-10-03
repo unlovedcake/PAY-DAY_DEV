@@ -23,7 +23,7 @@ import 'SignUpVC.dart';
 import 'Terms-Condition.dart';
 
 void setUpPassword(BuildContext context, String firstName, String lastName,
-    String phoneNumber, String password) {
+    String from,String phoneNumber, String password) {
   const encryptionChannel = MethodChannel('enc/dec');
 
   void startShowLoadingView() {
@@ -142,20 +142,31 @@ void setUpPassword(BuildContext context, String firstName, String lastName,
     debugPrint("BORROWERID: $borrowerID");
 
     var params = LinkListParams();
-    params.add(MyEntry("password", password));
-    params.add(MyEntry("mobile", '63$phoneNumber'));
-    params.add(MyEntry("imei", imei!));
-    params.add(MyEntry("borrowerid", borrowerID));
-    params.add(MyEntry("userid", '63$phoneNumber'));
-    params.add(MyEntry("from", "."));
-    params.add(MyEntry("firstname", firstName));
-    params.add(MyEntry("lastname", lastName));
-    // params.add(MyEntry("devicetype",deviceType.toString().replaceAll("{", "").replaceAll("}", "")));
-    // params.add(MyEntry("index", "0"));
+    if(from == ".") {
+      params.add(MyEntry("password", password));
+      params.add(MyEntry("mobile", '63$phoneNumber'));
+      params.add(MyEntry("imei", imei!));
+      params.add(MyEntry("borrowerid", borrowerID));
+      params.add(MyEntry("userid", '63$phoneNumber'));
+      params.add(MyEntry("from", from));
+      params.add(MyEntry("firstname", firstName));
+      params.add(MyEntry("lastname", lastName));
+
+    }else{
+      params.add(MyEntry("password", password));
+      params.add(MyEntry("mobile", '$phoneNumber'));
+      params.add(MyEntry("imei", imei!));
+      params.add(MyEntry("borrowerid", borrowerID));
+      params.add(MyEntry("userid", '$phoneNumber'));
+      params.add(MyEntry("from", from));
+
+    }
     RepoClass repoClass = RepoClass();
     ResponseDataModel responseData =
         await repoClass.didStartCallAPI_withSession(
             sessionID, "api/wsb05V2", "setupPasswordV2", params);
+
+
 
     try {
       if (responseData.status != "000") {
@@ -163,32 +174,29 @@ void setUpPassword(BuildContext context, String firstName, String lastName,
         debugPrint('A network error occurred');
         dismissLoadingView();
       } else {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('mobileNumber', "63$phoneNumber" ?? "");
+
+        if(from == "."){
+
+          debugPrint(responseData.data);
+
+          User user = User();
+          SharedPref sharedPref = SharedPref();
+
+          user.firstName = firstName;
+          user.lastName = lastName ;
+          user.mobile = '63$phoneNumber' ;
+
+          sharedPref.save("user", user);
+          prefs.setString('mobileNumber', "63$phoneNumber" ?? "");
+
+          debugPrint('SuccessFully Added');
+        }
 
         dismissLoadingView();
 
         moveToHomePage();
+        debugPrint('Password Changed');
 
-        // Map<String, dynamic> jsonData =
-        //     json.decode(responseData.data?.toLowerCase().trim() ?? ".");
-
-        // var sesionID =jsonData['sessionid'].toString();
-        // var borrowerID =jsonData['borrowerid'].toString();
-
-        debugPrint('OKEY');
-        debugPrint(responseData.data);
-
-        // GKBorrowerProfileDataModel decodedData =
-        //     GKBorrowerProfileDataModel.fromMap(jsonData["profile"]);
-
-        User user = User();
-        SharedPref sharedPref = SharedPref();
-
-        user.name = firstName + lastName ;
-        user.mobile = '63$phoneNumber' ;
-
-        sharedPref.save("user", user);
 
         // User userInfo = User.fromJson(await sharedPref.read("user"));
 

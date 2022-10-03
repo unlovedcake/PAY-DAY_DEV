@@ -9,7 +9,7 @@ import 'package:my_app/Components/UI Design/Colors-Design.dart';
 import 'package:my_app/Components/Utilities/CommonFunc.dart';
 import 'package:my_app/Controller/SignUp/SignUpVC/Terms-Condition.dart';
 
-import 'PartialRegisterV3-API.dart';
+import '../../../API/PartialRegisterV3-API.dart';
 
 
 
@@ -137,6 +137,7 @@ class SignUpVC extends StatelessWidget {
                 partialRegisterV3(
                   context,
                   mobileNum.text,
+                  '.'
                 );
               }
 

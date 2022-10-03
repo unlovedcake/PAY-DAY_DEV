@@ -8,34 +8,35 @@ import 'package:sqflite/sqflite.dart';
 import 'Controller/Login/LoginVC/LoginVC.dart';
 import 'Persistent/gk_sqllite.dart';
 
-void main() async{
-
-  const encryptionChannel = MethodChannel('enc/dec');
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // List<GKBorrowerProfileDataModel> sqlUserData = await SQLiteDbProvider.db.getAllUserProfile();
-  // if (sqlUserData.isNotEmpty) {
-  //   userData = sqlUserData[0];
-  //   //STORING sha1OTP
-  //   sha1OTP = await encryptionChannel
-  //   .invokeMethod('sha1', {
-  //     'data': sqlUserData[0].recentotp
-  //   });
+
+  // List<PaydayCompanyListDataModel>?  listCompanyData;
+  // if (prefs.containsKey("companyListData")) {
+  //
+  //   var companyJSONData = prefs.getString("companyListData");
+  //   listCompanyData = (companyJSONData as List)
+  //       .map((itemWord) => PaydayCompanyListDataModel.fromMap(itemWord))
+  //       .toList();
+  //
+  //   print('DECODEZZZZ ');
+  //   //listCompanyData.map((e) => debugPrint(e.CompanyName.toString()));
   // }
 
   String? mobileNumber;
 
 
-
   SharedPreferences prefs = await SharedPreferences.getInstance();
   mobileNumber = prefs.getString('mobileNumber') ?? "";
 
+
   runApp(
-    // ignore: prefer_const_constructors
+
     MaterialApp(
-      debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,
+
         home: mobileNumber == "" ? LoginVC() : PaydayHomeTabbar()
-      // home: sqlUserData.isEmpty ? LoginVC() : PaydayHomeTabbar()
-    )
+
+    ),
   );
 }

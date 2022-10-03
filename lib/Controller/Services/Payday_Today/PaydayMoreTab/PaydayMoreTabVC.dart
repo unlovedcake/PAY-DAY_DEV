@@ -10,14 +10,14 @@ import 'package:my_app/Model/GK-DataModel/GKBorrowerProfileDataModel.dart';
 import 'package:my_app/Persistent/gk_sqllite.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-User userInfo = User();
+// User userInfo = User();
+//
+// Future<void> getUserInfo() async{
+//   SharedPref sharedPref = SharedPref();
+//   userInfo = User.fromJson(await sharedPref.read("user"));
+// }
 
-Future<void> getUserInfo() async{
-  SharedPref sharedPref = SharedPref();
-  userInfo = User.fromJson(await sharedPref.read("user"));
-}
-
-Drawer sideBarDrawer(BuildContext context){
+Drawer sideBarDrawer(BuildContext context, User userInfo){
 
 
 
@@ -35,7 +35,7 @@ Drawer sideBarDrawer(BuildContext context){
       
       child: Column(
         children: [
-          HeaderSideBar(),
+          HeaderSideBar(userInfo),
 
           Container(height: 15),
 
@@ -61,16 +61,19 @@ Drawer sideBarDrawer(BuildContext context){
 
 
             SQLiteDbProvider.db.deleteDBQuery("UserProfile", userData?.id ?? -11);
-            // SharedPref sharedPref = SharedPref();
-            // GKBorrowerProfileDataModel user = GKBorrowerProfileDataModel.fromJson(await sharedPref.read("user"));
+           //   SharedPref sharedPref = SharedPref();
+           // await sharedPref.remove("user");
 
 
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.remove('mobileNumber');
 
+
               goToLoginPage();
 
+              //316ae5fb33a4ae4498d1c098bf4b238ca63d5935
+              //c3d6f99f05843d57a445332490888bf97775d05d
             },
           ),
 
@@ -83,11 +86,8 @@ Drawer sideBarDrawer(BuildContext context){
 }
 
 
-Container HeaderSideBar(){
+Container HeaderSideBar( User userInfo){
 
-
-
-  getUserInfo();
 
   return 
   Container(
@@ -115,7 +115,7 @@ Container HeaderSideBar(){
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("${userInfo.name?.capitalize()}",
+                              Text("${userInfo.firstName?.capitalize()}",
                                 style: const TextStyle(fontFamily: "SF-Pro-Round-Medium",fontSize: 17.7,color: Colors.white),
                                 textAlign: TextAlign.right,
                               ),

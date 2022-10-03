@@ -2,16 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:my_app/Controller/Services/Payday_Today/PaydayMoreTab/PaydayMoreTabVC.dart';
 import 'package:my_app/Controller/Services/Payday_Today/PaydayTab1/PaydayTab1.dart';
 
+import '../../../../Model/GK-DataModel/GKBorrowerProfileDataModel.dart';
+
 class PaydayHomeTabbar extends StatefulWidget {
+  const PaydayHomeTabbar({super.key});
+
   @override
   State<PaydayHomeTabbar> createState() => _PaydayHomeTabbar();
 }
 
 class _PaydayHomeTabbar extends State<PaydayHomeTabbar>{
-  
+
+
+
+  User userInfo = User();
+
+
+  Future<void> getUserInfo() async{
+    SharedPref sharedPref = SharedPref();
+    userInfo = User.fromJson(await sharedPref.read("user"));
+
+    setState(() {
+
+    });
+  }
+
+
+
+
+  @override
+  void initState() {
+    getUserInfo();
+    super.initState();
+
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
-  
+
     final topPadding = MediaQuery.of(context).padding.top;
     Size size = MediaQuery.of(context).size;
 
@@ -19,7 +49,7 @@ class _PaydayHomeTabbar extends State<PaydayHomeTabbar>{
       Scaffold(
         endDrawer: Container(
             margin: EdgeInsets.only(top: topPadding),
-            child: sideBarDrawer(context)
+            child: sideBarDrawer(context, userInfo)
         ),
     
         body: Builder( builder: (context1) => Stack(

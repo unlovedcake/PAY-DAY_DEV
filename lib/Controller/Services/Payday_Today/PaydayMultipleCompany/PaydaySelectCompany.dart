@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PaydaySelectCompanyVC extends StatefulWidget {
+  const PaydaySelectCompanyVC({super.key});
+
+
+
 
   @override
   State<PaydaySelectCompanyVC> createState() => _PaydaySelectCompanyVC();
@@ -24,6 +28,7 @@ class _PaydaySelectCompanyVC extends State<PaydaySelectCompanyVC> {
                 FocusScope.of(context).requestFocus(FocusNode());
               },
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text("Please select a company"),
 

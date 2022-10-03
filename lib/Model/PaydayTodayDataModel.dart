@@ -110,10 +110,31 @@ class PaydayCompanyListDataModel {
   PaydayCompanyListDataModel(this.EmployeeID, this.EmployerID, this.GuarantorID, this.CompanyName, this.Notes2);
 
   factory PaydayCompanyListDataModel.fromMap(Map<String, dynamic> data) {
-    return PaydayCompanyListDataModel( 
+    return PaydayCompanyListDataModel(
       data['EmployeeID'], data['EmployerID'], data['GuarantorID'], data['CompanyName'], data['Notes2']
-    ); 
+    );
   }
+
+
+  PaydayCompanyListDataModel.fromJson(Map<String, dynamic> json)
+      :
+
+        EmployeeID= json['EmployeeID'],
+        EmployerID= json['EmployerID'],GuarantorID= json['GuarantorID'],
+  CompanyName= json['CompanyName'],Notes2= json['Notes2'];
+
+
+  Map<String, dynamic> toJson() => {
+
+  'EmployeeID' :EmployeeID,
+    'EmployerID' :EmployerID,
+    'GuarantorID' :GuarantorID,
+    'CompanyName' :CompanyName,
+    'Notes2' :Notes2,
+  };
+
+
+
 }
 
 

@@ -9,13 +9,15 @@ import 'package:my_app/Components/UI Design/Colors-Design.dart';
 import 'package:my_app/Components/Utilities/CommonFunc.dart';
 import 'package:my_app/Controller/SignUp/SignUpVC/Terms-Condition.dart';
 
+import '../../API/PartialRegisterV3-API.dart';
 
 
 
-class ForgotPassword extends StatelessWidget {
+
+class IsNumberExist extends StatelessWidget {
   String titleName = "";
 
-  ForgotPassword({Key? key, this.titleName = "Forgot Password"}) : super(key: key);
+  IsNumberExist({Key? key, this.titleName = "Forgot Password"}) : super(key: key);
 
   final TextEditingController mobileNum = TextEditingController();
   final TextEditingController password = TextEditingController();
@@ -131,24 +133,23 @@ class ForgotPassword extends StatelessWidget {
               errorMessage('Phone number must be 10 digits', context);
             } else {
 
-              // //Navigator.pop(context);
-              // init() async {
-              //   FocusScope.of(context).unfocus();
-              //
-              //   partialRegisterV3(
-              //     context,
-              //     mobileNum.text,
-              //   );
-              // }
-              //
-              // init();
-              //
-              //
+              init() async {
+                FocusScope.of(context).unfocus();
+
+                partialRegisterV3(
+                    context,
+                    mobileNum.text,
+                    'FORGETPASSWORD'
+                );
+              }
+
+              init();
+
 
             }
 
           },
-          child: const Text("Sign Up",
+          child: const Text("Verify Mobile Number",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 17,

@@ -20,6 +20,6 @@ To fix this error
 Unhandled Exception: DioError [DioErrorType.other]: SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = localhost, port = 49794
 
 Run this command
-C:\Users\GoodApps Inc\AppData\Local\Android\Sdk\platform-tools>adb reverse tcp:8192 tcp:8192
+C:\Users\GoodApps Inc\AppData\Local\Android\Sdk\platform-tools>adb reverse tcp:8193 tcp:8193
 
 

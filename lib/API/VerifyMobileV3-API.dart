@@ -4,25 +4,26 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:my_app/Controller/ForgotPassword/change-password.dart';
 import 'package:my_app/Controller/SignUp/SignUpVC/VerifyCodeVC.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../Components/Utilities/CommonFunc.dart';
-import '../../../Components/Utilities/GlobalVar.dart';
-import '../../../Components/Utilities/LinkList.dart';
-import '../../../Components/Utilities/Extensions.dart';
-import '../../../Model/PaydayTodayDataModel.dart';
-import '../../Modal/LoadingView.dart';
-import '../../Services/Payday_Today/PaydayMultipleCompany/PaydaySelectCompany.dart';
-import '../../Services/Payday_Today/PaydayTabbar/PaydayHomeTabbarVC.dart';
+import '../Components/Utilities/CommonFunc.dart';
+import '../Components/Utilities/GlobalVar.dart';
+import '../Components/Utilities/LinkList.dart';
+import '../Components/Utilities/Extensions.dart';
+import '../Model/PaydayTodayDataModel.dart';
+import '../Controller/Modal/LoadingView.dart';
+import '../Controller/Services/Payday_Today/PaydayMultipleCompany/PaydaySelectCompany.dart';
+import '../Controller/Services/Payday_Today/PaydayTabbar/PaydayHomeTabbarVC.dart';
 import '/Model/APIResponse/APIDataModel.dart';
 import '/Server/Repo.dart';
 
-import 'SignUp-SetupVC.dart';
-import 'SignUpVC.dart';
+import '../Controller/SignUp/SignUpVC/SignUp-SetupVC.dart';
+import '../Controller/SignUp/SignUpVC/SignUpVC.dart';
 
 void verifyMobileV3(BuildContext context,
-    String? phoneNumber,String? otpCode) {
+    String? phoneNumber,String? otpCode, String from) {
 
 
 
@@ -53,6 +54,11 @@ void verifyMobileV3(BuildContext context,
           builder: (BuildContext context) => SignUpSetupVC(phoneNumber: phoneNumber!),
         ));
   }
+
+  void gotoToChangePassword() {
+    Navigator.of(context).push(createRoute(ChangePassword(phoneNumber: "$phoneNumber")));
+  }
+
 
   void errorMessage(String error) {
     showToast(error,
@@ -91,10 +97,10 @@ void verifyMobileV3(BuildContext context,
 
     var params = LinkListParams();
     params.add(MyEntry("imei",imei ?? "."));
-    params.add(MyEntry("userid","63$phoneNumber"));
+    params.add(MyEntry("userid",from == "." ? "63$phoneNumber" : "$phoneNumber"));
     params.add(MyEntry("usertype","BORROWER"));
     params.add(MyEntry("devicetype",deviceType.toString().replaceAll("{", "").replaceAll("}", "")));
-    params.add(MyEntry("from","."));
+    params.add(MyEntry("from",from));
     params.add(MyEntry("otp",otpCode ?? ''));
     //params.add(MyEntry("index",'1'));
     //params.add(MyEntry("isalwayssignin","0"));
@@ -134,8 +140,13 @@ void verifyMobileV3(BuildContext context,
 
         debugPrint(sha1OTP);
 
-        gotoToSingupSetUpVc();
-        //Navigator.of(context).push(createRoute(SignUpSetupVC(phoneNumber: "$phoneNumber")));
+        if(from == "."){
+          gotoToSingupSetUpVc();
+        }else{
+         gotoToChangePassword();
+        }
+
+
         debugPrint('Validate OKEY');
         debugPrint(responseData.status);
 
